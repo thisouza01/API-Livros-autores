@@ -1,3 +1,4 @@
+import NaoEncontrado from "../erros/NaoEncontrado.js";
 import livros from "../models/Livro.js";
 
 class LivroController {
@@ -20,8 +21,12 @@ class LivroController {
       const resultado = await livros.findById(id)
         .populate("autor", "nome")
         .exec();
-          
-      res.status(200).send(resultado);
+
+      if(resultado !== null) {
+        res.status(200).send(resultado);
+      } else {
+        next(new NaoEncontrado("Id do Livro não localizado."));
+      }
     } catch(err) {
       next(err); 
     }
@@ -54,7 +59,11 @@ class LivroController {
       const id = req.params.id;
       const resultado = await livros.findByIdAndUpdate(id, {$set: req.body});
 
-      res.status(200).json(resultado);
+      if(resultado !== null) {
+        res.status(200).json(resultado);
+      } else {
+        next(new NaoEncontrado("Id do Livro não localizado."));
+      }
     } catch(err) {
       next(err);
     }
@@ -63,9 +72,13 @@ class LivroController {
   static excluirLivro = async (req, res, next) => {
     try{ 
       const id = req.params.id;
-      await livros.findByIdAndDelete(id);
+      const resultado = await livros.findByIdAndDelete(id);
 
-      res.status(200).send({message: "livro removido com sucesso!"});
+      if(resultado !== null) {
+        res.status(200).send({message: "livro removido com sucesso!"});
+      } else {
+        next(new NaoEncontrado("Id do Livro não localizado."));
+      }
     } catch(err) {
       next(err);
     }
