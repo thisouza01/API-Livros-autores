@@ -10,9 +10,12 @@ db.once("open", () => {
 
 const app = express();
 app.use(express.json());
+app.get("/livros", (req, res, next) => {
+  console.log("Middleware registrado no GET da rota /livros");
+  next();
+});
 routes(app);
 
-// eslint-disable-next-line no-unused-vars
 app.use(manipuladorDeErros);
 
 export default app;

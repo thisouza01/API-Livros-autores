@@ -2,6 +2,8 @@
 import mongoose from "mongoose";
 
 function manipuladorDeErros(err, req, res, next) {
+  console.log(err); // imprime o erro para o desenvolvedor
+
   if(err instanceof mongoose.Error.CastError) {
     res.status(400).send({message: "Um ou mais dados fornecidos estao incorretos"});
   } else {
