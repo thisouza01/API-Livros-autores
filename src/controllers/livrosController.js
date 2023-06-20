@@ -36,11 +36,16 @@ class LivroController {
     try{
       const busca = await processaBusca(req.query);
 
-      const resultado = await livros
-        .find(busca)
-        .populate("autor");
+      if(busca !== null) {
+        const resultado = await livros
+          .find(busca)
+          .populate("autor");
+  
+        res.status(200).json(resultado);
+      } else {
+        res.status(200).send([]);
+      }
 
-      res.status(200).json(resultado);
     } catch(err) {
       next(err);
     }
@@ -92,7 +97,7 @@ class LivroController {
 async function processaBusca(parametros) {
   const { editora, titulo, minPaginas, maxPaginas, nomeAutor } = parametros;
 
-  const busca = {};
+  let busca = {};
 
   if(editora) busca.editora = editora;
   if(titulo) busca.titulo = { $regex: titulo, $options: "i" };
@@ -105,9 +110,12 @@ async function processaBusca(parametros) {
   if(nomeAutor) {
     const autor = await autores.findOne({ nome: nomeAutor });
 
-    const autorId = autor._id;
+    if(autor !== null) {
+      busca.autor = autor._id;
+    } else {
+      busca = null;
+    }
 
-    busca.autor = autorId;
   }
 
   return busca;
