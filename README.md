@@ -5,15 +5,15 @@ Projeto utilizado no curso da Alura
 
 Dependencias:
 
-. Mongoose
-. Mongoose-autopopulate
-. Express
-. Dotenv
+- Mongoose: "^6.2.6"
+- Mongoose-autopopulate: "^1.0.1"
+- Express: "^4.17.3"
+- Dotenv: "^16.0.3"
 
 Dev dependecias:
 
-. ESLint
-. Nodemon
+- ESLint: "^8.42.0"
+- Nodemon: "^2.0.22"
 
 Para utilizar:
 
