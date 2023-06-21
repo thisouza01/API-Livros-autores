@@ -5,11 +5,11 @@ class LivroController {
 
   static listarLivros = async (req, res, next) => {
     try{
-      const livrosResultado = await livros.find()
-        .populate("autor")
-        .exec();
+      const buscaLivros = livros.find();
 
-      res.status(200).json(livrosResultado);
+      req.resultado = buscaLivros;
+
+      next();
     }catch (err) {
       next(err);
     }
@@ -18,9 +18,10 @@ class LivroController {
   static listarLivroPorId = async (req, res, next) => {
     try{
       const id = req.params.id;
-      const resultado = await livros.findById(id)
-        .populate("autor", "nome")
-        .exec();
+      const resultado = await livros
+        .findById(id, {}, {autopopulate: false})
+        .populate("autor");
+
 
       if(resultado !== null) {
         res.status(200).send(resultado);
@@ -37,11 +38,12 @@ class LivroController {
       const busca = await processaBusca(req.query);
 
       if(busca !== null) {
-        const resultado = await livros
-          .find(busca)
-          .populate("autor");
+        const resultado = livros
+          .find(busca);
+
+        req.resultado = resultado;
   
-        res.status(200).json(resultado);
+        next();
       } else {
         res.status(200).send([]);
       }
